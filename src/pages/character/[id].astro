@@ -1,0 +1,90 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { fetchAPI } from "../../services/fetchRickAndMorty";
+import { getCharacter } from "../../services/fetchRickAndMorty";
+
+export async function getStaticPaths() {
+  const { results } = await fetchAPI(1);
+  return results.map((character) => ({
+    params: { id: character.id },
+  }));
+}
+const { id } = Astro.params;
+
+const character = await getCharacter(id);
+---
+
+<Layout title={`character ${id}`}>
+  <div class="character-container">
+    <img
+      transition:name={character.name}
+      src={character.image}
+      alt={character.name}
+    />
+    <div class="container-data">
+      <h1>{character.name}</h1>
+      <div class="container-info">
+        <p>Gender: {character.gender}</p>
+        <p>Specie: {character.species}</p>
+        <p
+          class:list={[
+            {
+              alive: character.status === "Alive",
+              dead: character.status === "Dead",
+              unknown: character.status === "unknown",
+            },
+          ]}
+        >
+          Status: {character.status}
+        </p>
+      </div>
+      <p>
+        Description: Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+        Rem quos tenetur velit. Sunt tempore iure ut ab enim temporibus.
+        Sapiente animi aut iure exercitationem nostrum quo laborum sint
+        quibusdam assumenda quia explicabo corporis, autem neque culpa fugit
+        debitis a adipisci eius quidem ab perspiciatis nihil! Optio maxime
+        nesciunt doloribus expedita?
+      </p>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  img {
+    border-radius: 10px;
+  }
+
+  .character-container {
+    display: flex;
+    gap: 20px;
+  }
+
+  .container-data {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .container-info {
+    display: flex;
+    gap: 10px;
+  }
+
+  .container-info p {
+    padding: 5px 10px;
+    border-radius: 10px;
+  }
+
+  .dead {
+    background-color: #aa0e0e;
+  }
+
+  .alive {
+    background-color: #138a13;
+  }
+
+  .unknown {
+    background-color: #484948;
+  }
+</style>

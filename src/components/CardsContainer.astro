@@ -1,12 +1,21 @@
 ---
-import { type ApiResult } from "../models/apiRickAndMorty.model";
+import Card from "./Card.astro";
+import { fetchAPI } from "../services/fetchRickAndMorty";
 
-const res = await fetch("https://rickandmortyapi.com/api/location?page=1");
-const json = await res.json();
-const data: ApiResult = json;
-console.log(data);
+const { results } = await fetchAPI(1);
 ---
 
-<div>
-  {data.results.map((character) => <div>{character.name}</div>)}
+<div class="container-card">
+  {results.map((character) => <Card character={character} />)}
 </div>
+
+<style>
+  .container-card {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+  }
+</style>

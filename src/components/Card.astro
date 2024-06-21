@@ -1,0 +1,52 @@
+---
+import type { Character } from "../models/apiRickAndMorty.model";
+
+interface Props {
+  character: Character;
+}
+
+const { character } = Astro.props;
+---
+
+<a class="card" href={`/character/${character.id}`}>
+  <img
+    transition:name={character.name}
+    src={character.image}
+    alt={character.name}
+    class="image"
+  />
+</a>
+
+<script>
+  const cardImages = document.querySelectorAll(".image");
+  console.log(cardImages);
+  if (cardImages) {
+    cardImages.forEach((elem) => {
+      const element = elem as HTMLElement;
+
+      element.addEventListener("mousemove", (e: MouseEvent) => {
+        const { offsetX, offsetY } = e;
+        const rotationX = ((offsetX - 100) / 100) * 15;
+        const rotationY = ((offsetY - 100) / 100) * 15;
+        element.style.transform = `rotateX(${rotationY}deg) rotateY(${rotationX}deg)`;
+        element.style.transition = "none";
+      });
+      element.parentNode?.addEventListener("mouseleave", () => {
+        element.style.transform = `rotateX(0deg) rotateY(0deg)`;
+        element.style.transition = "transform 300ms ease-out";
+      });
+    });
+  }
+</script>
+
+<style>
+  .card {
+    perspective: 1000px;
+    height: 200px;
+  }
+  img {
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+  }
+</style>
